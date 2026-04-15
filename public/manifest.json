@@ -1,0 +1,12 @@
+{
+  "name": "Temper - 结构化思维训练",
+  "short_name": "Temper",
+  "description": "支持 AI 评分、多轮迭代、统计分析、Markdown 数据交换的完整训练工具",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#0f172a",
+  "icons": [
+    { "src": "/favicon.svg", "sizes": "any", "type": "image/svg+xml" }
+  ]
+}
