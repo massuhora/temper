@@ -10,6 +10,8 @@ Temper is a desktop app for deliberate structured thinking practice. It combines
 
 Everything stays local — your questions, practice records, principles, and API key live in a SQLite database on your machine. No cloud, no tracking, no subscription walls.
 
+![Temper UI Screenshot](docs/assets/ui-screenshot.png)
+
 ---
 
 ## Why Temper
