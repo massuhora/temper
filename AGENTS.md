@@ -225,6 +225,7 @@ The database file is `temper.db` in the system app data directory, managed by `s
 | mistake_threshold | INTEGER DEFAULT 6 | Mistake score threshold |
 | practice_duration_seconds | INTEGER DEFAULT 300 | Default practice duration |
 | strict_sketch_mode | INTEGER DEFAULT 0 | Strict timed-sketch mode |
+| language | TEXT DEFAULT 'en' | UI language preference; defaults to English |
 
 ### 7.2 Core Types (`src/types/index.ts`)
 
@@ -282,6 +283,7 @@ interface AppSettings {
   mistakeThreshold?: number; // Default 6
   practiceDurationSeconds?: number; // Default 300
   strictSketchMode?: boolean; // Default false
+  language?: string;     // Default "en"
 }
 ```
 

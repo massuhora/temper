@@ -136,14 +136,21 @@ pub fn init_db(conn: &Connection) -> Result<(), rusqlite::Error> {
       mistake_threshold INTEGER DEFAULT 6,
       practice_duration_seconds INTEGER DEFAULT 300,
       strict_sketch_mode INTEGER DEFAULT 0,
-      language TEXT
+      language TEXT DEFAULT 'en'
     )",
     [],
   )?;
 
   let _ = conn.execute("ALTER TABLE settings ADD COLUMN language TEXT", []);
+  let _ = conn.execute(
+    "UPDATE settings SET language = 'en' WHERE language IS NULL OR language = ''",
+    [],
+  );
 
-  conn.execute("INSERT OR IGNORE INTO settings (id) VALUES (1)", [])?;
+  conn.execute(
+    "INSERT OR IGNORE INTO settings (id, language) VALUES (1, 'en')",
+    [],
+  )?;
 
   Ok(())
 }
@@ -536,7 +543,7 @@ fn db_update_settings(
   changes: serde_json::Value,
 ) -> Result<(), String> {
   let tx = conn.transaction().map_err(|e| e.to_string())?;
-  tx.execute("INSERT OR IGNORE INTO settings (id) VALUES (1)", [])
+  tx.execute("INSERT OR IGNORE INTO settings (id, language) VALUES (1, 'en')", [])
     .map_err(|e| e.to_string())?;
   let obj = changes.as_object().ok_or("changes must be an object")?;
   if !obj.is_empty() {
@@ -596,7 +603,7 @@ fn db_clear_all_data(conn: &mut Connection) -> Result<(), String> {
     .map_err(|e| e.to_string())?;
   tx.execute("DELETE FROM settings", [])
     .map_err(|e| e.to_string())?;
-  tx.execute("INSERT OR IGNORE INTO settings (id) VALUES (1)", [])
+  tx.execute("INSERT OR IGNORE INTO settings (id, language) VALUES (1, 'en')", [])
     .map_err(|e| e.to_string())?;
   tx.commit().map_err(|e| e.to_string())?;
   Ok(())
@@ -862,6 +869,7 @@ mod tests {
     assert_eq!(settings.deepseek_api_key, None);
     assert_eq!(settings.deepseek_api_url, None);
     assert_eq!(settings.strict_sketch_mode, Some(false));
+    assert_eq!(settings.language, Some("en".to_string()));
   }
 
   #[test]
@@ -1013,6 +1021,7 @@ mod tests {
     assert_eq!(settings.mistake_threshold, Some(8));
     assert_eq!(settings.deepseek_api_key, Some("key123".to_string()));
     assert_eq!(settings.practice_duration_seconds, Some(300));
+    assert_eq!(settings.language, Some("en".to_string()));
   }
 
   #[test]
@@ -1090,5 +1099,6 @@ mod tests {
     assert!(db_get_all_principles(&conn).unwrap().is_empty());
     let settings = db_get_settings(&conn).unwrap().unwrap();
     assert_eq!(settings.mistake_threshold, Some(6));
+    assert_eq!(settings.language, Some("en".to_string()));
   }
 }

@@ -6,6 +6,7 @@ import zh from './locales/zh/translation.json'
 i18next
   .use(initReactI18next)
   .init({
+    lng: 'en',
     fallbackLng: 'en',
     interpolation: { escapeValue: false },
     resources: {

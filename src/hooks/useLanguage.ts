@@ -3,7 +3,7 @@ import i18n from '@/i18n'
 import { db } from '@/db'
 
 export function useLanguage() {
-  const [language, setLanguageState] = useState(i18n.language || 'en')
+  const [language, setLanguageState] = useState('en')
 
   useEffect(() => {
     const init = async () => {
