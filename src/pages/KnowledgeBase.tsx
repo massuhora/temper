@@ -1,7 +1,7 @@
 import * as React from "react"
 import ReactMarkdown from "react-markdown"
 import remarkGfm from "remark-gfm"
-import { structuredThinkingHandbook } from "@/lib/knowledgeBase"
+import { getStructuredThinkingHandbook } from "@/lib/knowledgeBase"
 import { cn } from "@/lib/utils"
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { Separator } from "@/components/ui/separator"
@@ -88,12 +88,14 @@ const markdownComponents = {
   ),
 }
 
-const chapterKeys = ["intro", "ch1", "ch2", "ch3", "ch4", "conclusion"]
-
 export function KnowledgeBase() {
-  const { t } = useTranslation()
+  const { t, i18n } = useTranslation()
   const [activeIndex, setActiveIndex] = React.useState(0)
-  const activeChapter = structuredThinkingHandbook.chapters[activeIndex]
+  const handbook = React.useMemo(
+    () => getStructuredThinkingHandbook(t),
+    [t, i18n.language]
+  )
+  const activeChapter = handbook.chapters[activeIndex]
 
   return (
     <div className="flex h-[calc(100vh-88px)] flex-col gap-4 md:h-[calc(100vh-48px)]">
@@ -111,7 +113,7 @@ export function KnowledgeBase() {
         <div className="shrink-0 md:w-60">
           <ScrollArea className="h-full w-full rounded-lg border border-border bg-card p-2 md:p-3">
             <div className="flex gap-2 md:flex-col">
-              {structuredThinkingHandbook.chapters.map((_chapter, idx) => (
+              {handbook.chapters.map((chapter, idx) => (
                 <button
                   key={idx}
                   type="button"
@@ -126,9 +128,7 @@ export function KnowledgeBase() {
                   <span className="mr-2 tabular-nums opacity-60">
                     {String(idx + 1).padStart(2, "0")}
                   </span>
-                  <span className="truncate">
-                    {t(`knowledge.chapters.${chapterKeys[idx]}`)}
-                  </span>
+                  <span className="truncate">{chapter.title}</span>
                 </button>
               ))}
             </div>
@@ -138,7 +138,7 @@ export function KnowledgeBase() {
         {/* Content */}
         <div className="flex min-h-0 min-w-0 flex-1 flex-col rounded-lg border border-border bg-card p-4 md:p-6">
           <ScrollArea className="min-h-0 w-full flex-1 pr-2">
-            <article className="max-w-3xl w-full break-words">
+            <article className="w-full max-w-3xl break-words">
               <ReactMarkdown
                 remarkPlugins={[remarkGfm]}
                 components={markdownComponents}
